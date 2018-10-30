@@ -1,27 +1,43 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
 
 int stats(char* filename){
   
-  int fd = open(filename,O_RDWR | O_CREAT, 00744);
+  int fd = open(filename, O_RDWR | O_CREAT, 00744);
   printf("File Descriptor: %d\n",fd);
 
-  int closed = close(fd);
-  //int size = lseek(fd,4, SEEK_SET); 
-   
+
+  //populate array with random values
+  int randfd = open("/dev/random", O_RDWR | O_CREAT);
+  int arr[10];
+  int l = read(randfd, arr, 10*sizeof(int));
+  int m = close(randfd);
+  
+ 
+  //write to array
+  int writ = write(fd,arr,10*sizeof(int));
 
   struct stat info;
 
-  int success = stat("./file.txt",info);
+  //int success = stat("./file.txt",info);
   
-  printf("This is the file size: %d/n", info.st_size);
+  lseek(fd, sizeof(fd), SEEK_SET);
+  printf("This is the file size: %ld\n", info.st_size);
+
+  
+  int closed = close(fd);
+
   return 0; 
 }
 
 int main(){
+ 
+  
   stats("file.txt");
+  
   return 0;
 }
