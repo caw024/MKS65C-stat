@@ -12,7 +12,7 @@ int stats(char* filename){
 
 
   //populate array with random values
-  int randfd = open("/dev/random", O_RDWR | O_CREAT);
+  int randfd = open("/dev/random", O_RDONLY);
   int arr[10];
   int l = read(randfd, arr, 10*sizeof(int));
   int m = close(randfd);
@@ -22,11 +22,13 @@ int stats(char* filename){
   int writ = write(fd,arr,10*sizeof(int));
 
   struct stat info;
-
-  //int success = stat("./file.txt",info);
   
-  lseek(fd, sizeof(fd), SEEK_SET);
-  printf("This is the file size: %ld\n", info.st_size);
+  lseek(writ, 0, SEEK_SET);
+
+  stat(filename,&info);
+  int success = info.st_size;
+  
+  printf("This is the file size: %d\n", success);
 
   
   int closed = close(fd);
