@@ -4,7 +4,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <time.h>
 
+//Help received from stack overflow
 int stats(char* filename){
   
   int fd = open(filename, O_RDWR | O_CREAT, 00744);
@@ -21,15 +23,19 @@ int stats(char* filename){
   //write to array
   int writ = write(fd,arr,10*sizeof(int));
 
-  struct stat info;
-  
-  lseek(writ, 0, SEEK_SET);
+  //lseek(writ, 0, SEEK_SET);
 
-  stat(filename,&info);
-  int success = info.st_size;
+  struct stat * info = malloc(sizeof(struct stat));
   
-  printf("This is the file size: %d\n", success);
-
+  stat(filename,info);
+  
+  int size = info->st_size;
+  int mode = info->st_mode;
+  struct timespec lastacc = info->st_atim;
+  
+  printf("This is the file size: %d\n", size);
+  printf("This is the mode: %d\n", mode);
+  //printf("This is when the file was last accessed: %c\n", ctime(lastacc) );
   
   int closed = close(fd);
 
