@@ -8,7 +8,7 @@
 
 //Help received from stack overflow
 int stats(char* filename){
-  
+
   int fd = open(filename, O_RDWR | O_CREAT, 00744);
   printf("File Descriptor: %d\n",fd);
 
@@ -18,34 +18,34 @@ int stats(char* filename){
   int arr[10];
   int l = read(randfd, arr, 10*sizeof(int));
   int m = close(randfd);
-  
- 
+
+
   //write to array
   int writ = write(fd,arr,10*sizeof(int));
 
   //lseek(writ, 0, SEEK_SET);
 
   struct stat * info = malloc(sizeof(struct stat));
-  
+
   stat(filename,info);
-  
+
   int size = info->st_size;
   int mode = info->st_mode;
-  struct timespec lastacc = info->st_atim;
-  
+  char * recent = ctime(&(info->st_atime));
+
   printf("This is the file size: %d\n", size);
-  printf("This is the mode: %d\n", mode);
-  //printf("This is when the file was last accessed: %c\n", ctime(lastacc) );
-  
+  printf("This is the mode: %o\n", mode);
+  printf("This is when the file was last accessed: %s\n", recent );
+
   int closed = close(fd);
 
-  return 0; 
+  return 0;
 }
 
 int main(){
- 
-  
+
+
   stats("file.txt");
-  
+
   return 0;
 }
